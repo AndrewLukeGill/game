@@ -1,0 +1,24 @@
+Objectives:
+1. Open Window
+2. Draw Sprite
+3. Draw Background 
+5. Entities 
+	- Noninteractable animation
+	- Interactable object
+	- Projectile
+	- Enemy 
+	- Player
+	- NPC
+6. Draw multiple sprites 
+7. Animate Sprites
+8. Core loop <
+	- Check collision
+	- Update values
+	- Update positions
+	- Update animations 
+9. Input
+10. States
+11. Sound
+12. Levels
+13. Assests
+14. Specific implementation
