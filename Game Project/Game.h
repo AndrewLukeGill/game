@@ -82,6 +82,8 @@ private:
     DirectX::SimpleMath::Vector2 centre;
     // dimensions of the section of background in view
     DirectX::SimpleMath::Vector2 subRectDim;
+    // ratio between background size and current size
+    float ratio = 1; 
 
     std::unique_ptr<Entity> sprite;
     std::unique_ptr<Entity> sprite_2;

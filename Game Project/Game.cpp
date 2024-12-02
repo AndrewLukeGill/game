@@ -135,13 +135,13 @@ void Game::Render()
 
     
     m_spriteBatch->Draw(sprite->get_frame(m_timer.GetTotalSeconds()).Get(), TranslateCoordinates(sprite->get_loc(), true), nullptr,
-        Colors::White, 0.f, sprite->get_origin(), sprite->get_scale());
+        Colors::White, 0.f, sprite->get_origin(), sprite->get_scale() * ratio);
 
     m_spriteBatch->Draw(sprite_2->get_frame(m_timer.GetTotalSeconds()).Get(), sprite_2->get_loc(), nullptr,
-        Colors::White, 0.f, sprite_2->get_origin(), sprite_2->get_scale());
+        Colors::White, 0.f, sprite_2->get_origin(), sprite_2->get_scale() * ratio);
 
     m_spriteBatch->Draw(sprite_3->get_frame(m_timer.GetTotalSeconds()).Get(), TranslateCoordinates(sprite_3->get_loc(), false), nullptr,
-        Colors::White, 0.f, sprite_3->get_origin(), sprite_3->get_scale());
+        Colors::White, 0.f, sprite_3->get_origin(), sprite_3->get_scale() * ratio);
 
     m_spriteBatch->End();
 
@@ -182,7 +182,7 @@ DirectX::SimpleMath::Vector2 Game::TranslateCoordinates(DirectX::SimpleMath::Vec
         }
     }
     else {
-        if (loc.x < centre.x - subRectDim.x) {
+        /*if (loc.x < centre.x - subRectDim.x) {
             screen_loc.x = loc.x - (centre.x - subRectDim.x);
         }
         else if (loc.x > centre.x + subRectDim.x) {
@@ -190,11 +190,12 @@ DirectX::SimpleMath::Vector2 Game::TranslateCoordinates(DirectX::SimpleMath::Vec
         }
         else {
             screen_loc.x = loc.x - (centre.x - subRectDim.x);
-        }
+        }*/
+        screen_loc.x = (dimensions.x / (subRectDim.x * 2)) * (loc.x - (centre.x - subRectDim.x));
 
         //screen_loc.x = 115;
 
-        if (loc.y < centre.y - subRectDim.y) {
+        /*if (loc.y < centre.y - subRectDim.y) {
             screen_loc.y = loc.y - (centre.y - subRectDim.y);
         }
         else if (loc.y > centre.y + subRectDim.y) {
@@ -202,7 +203,8 @@ DirectX::SimpleMath::Vector2 Game::TranslateCoordinates(DirectX::SimpleMath::Vec
         }
         else {
             screen_loc.y = loc.y - (centre.y - subRectDim.y);
-        }
+        }*/
+        screen_loc.y = (dimensions.y / (subRectDim.y * 2)) * (loc.y - (centre.y - subRectDim.y));
     }
     return screen_loc;
 }
@@ -279,7 +281,7 @@ void Game::GetDefaultSize(int& width, int& height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
     width = 800;
-    height = 600;
+    height = 480;
 }
 #pragma endregion
 
@@ -314,16 +316,16 @@ void Game::CreateDeviceDependentResources()
     DX::ThrowIfFailed(
         CreateWICTextureFromFile(device, L"sunset.jpg", nullptr,
             m_background.ReleaseAndGetAddressOf()));
-    dimensions.x = 799;
-    dimensions.y = 599;
+    dimensions.x = 800;
+    dimensions.y = 480;
 
     subrect.left = 100;
-    subrect.right = 280;
-    subRectDim.x = 90;
+    subrect.right = 300;
+    subRectDim.x = 100;
 
     subrect.top = 100;
-    subrect.bottom = 320;
-    subRectDim.y = 110;
+    subrect.bottom = 220;
+    subRectDim.y = 60;
 
     centre.x = 175;
     centre.y = 175;
@@ -356,8 +358,8 @@ void Game::CreateDeviceDependentResources()
         m_deviceResources,
         0.33,
         m_timer.GetTotalSeconds(),
-        200,
-        200,
+        800,
+        480,
         95,
         97);
 }
@@ -366,13 +368,14 @@ void Game::CreateDeviceDependentResources()
 void Game::CreateWindowSizeDependentResources()
 {
     // TODO: Initialize windows-size dependent objects here.
+    float old = m_fullscreenRect.right;
     auto viewSize = m_deviceResources->GetOutputSize();
     m_screenPos.x = float(viewSize.right) / 2.f;
     m_screenPos.y = float(viewSize.bottom) / 2.f;
 
     m_fullscreenRect = m_deviceResources->GetOutputSize();
-    //dimensions.x = m_fullscreenRect.right - 1;
-    //dimensions.y = m_fullscreenRect.bottom - 1;
+
+    ratio = m_fullscreenRect.right / 800;
 }
 
 void Game::OnDeviceLost()
