@@ -30,6 +30,8 @@ class Entity
 
 		float get_scale();
 
+		void update_scale();
+
 		void update_speed(int x, int y);
 
 		int get_facing();

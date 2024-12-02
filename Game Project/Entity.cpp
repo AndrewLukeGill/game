@@ -95,7 +95,11 @@ int Entity::get_facing()
 
 float Entity::get_scale()
 {
-	return float(m_deviceResources->GetOutputSize().right) / 1080.f;
+	return 1.0f;
+}
+
+void Entity::update_scale() {
+
 }
 
 void Entity::update_facing(int dirr) 

@@ -76,10 +76,16 @@ private:
     RECT m_fullscreenRect;
     RECT subrect;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_background;
+    //dimensions of background
     DirectX::SimpleMath::Vector2 dimensions;
+    // world coordinates of centre of screen
+    DirectX::SimpleMath::Vector2 centre;
+    // dimensions of the section of background in view
+    DirectX::SimpleMath::Vector2 subRectDim;
 
     std::unique_ptr<Entity> sprite;
     std::unique_ptr<Entity> sprite_2;
+    std::unique_ptr<Entity> sprite_3;
 
     std::unique_ptr<DirectX::Keyboard> m_keyboard;
     std::unique_ptr<DirectX::Mouse> m_mouse;

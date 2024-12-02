@@ -140,6 +140,9 @@ void Game::Render()
     m_spriteBatch->Draw(sprite_2->get_frame(m_timer.GetTotalSeconds()).Get(), sprite_2->get_loc(), nullptr,
         Colors::White, 0.f, sprite_2->get_origin(), sprite_2->get_scale());
 
+    m_spriteBatch->Draw(sprite_3->get_frame(m_timer.GetTotalSeconds()).Get(), TranslateCoordinates(sprite_3->get_loc(), false), nullptr,
+        Colors::White, 0.f, sprite_3->get_origin(), sprite_3->get_scale());
+
     m_spriteBatch->End();
 
     m_deviceResources->PIXEndEvent();
@@ -152,31 +155,54 @@ DirectX::SimpleMath::Vector2 Game::TranslateCoordinates(DirectX::SimpleMath::Vec
 {
     DirectX::SimpleMath::Vector2 screen_loc;
     if (is_player) {
-       int width = (subrect.right - subrect.left) / 2;
-       int height = (subrect.bottom - subrect.top) / 2;
-       if (loc.x < (dimensions.x - width) && loc.x > width) {
-           screen_loc.x = m_deviceResources->GetOutputSize().right / 2.0f;
-           subrect.right = loc.x + width;
-           subrect.left = loc.x - width;
-       } 
-       else if (loc.x > dimensions.x - width) {
-           screen_loc.x = m_deviceResources->GetOutputSize().right / 2.0f + (m_deviceResources->GetOutputSize().right / 2.0f * ((loc.x - dimensions.x + width) / width));
-       }
-       else {
-           screen_loc.x =  m_deviceResources->GetOutputSize().right / 2.0f * (loc.x / width);
-       }
+        if (loc.x < (dimensions.x - subRectDim.x) && loc.x > subRectDim.x) {
+            screen_loc.x = m_deviceResources->GetOutputSize().right / 2.0f;
+            centre.x = loc.x;
+            subrect.right = centre.x + subRectDim.x;
+            subrect.left = centre.x - subRectDim.x;
+        }
+        else if (loc.x > dimensions.x - subRectDim.x) {
+            screen_loc.x = m_deviceResources->GetOutputSize().right / 2.0f + (m_deviceResources->GetOutputSize().right / 2.0f * ((loc.x - dimensions.x + subRectDim.x) / subRectDim.x));
+        }
+        else {
+            screen_loc.x = m_deviceResources->GetOutputSize().right / 2.0f * (loc.x / subRectDim.x);
+        }
 
-       if (loc.y < dimensions.y - height && loc.y > height) {
-           screen_loc.y = m_deviceResources->GetOutputSize().bottom / 2.0f;
-           subrect.top = loc.y - height;
-           subrect.bottom = loc.y + height;
-       } 
-       else if (loc.y > dimensions.y - height) {
-           screen_loc.y = m_deviceResources->GetOutputSize().bottom / 2.0f + (m_deviceResources->GetOutputSize().bottom / 2.0f * ((loc.y - dimensions.y + height) / height));
-       }
-       else {
-           screen_loc.y = m_deviceResources->GetOutputSize().bottom / 2.0f * (loc.y / height);
-       }
+        if (loc.y < dimensions.y - subRectDim.y && loc.y > subRectDim.y) {
+            screen_loc.y = m_deviceResources->GetOutputSize().bottom / 2.0f;
+            centre.y = loc.y;
+            subrect.top = centre.y - subRectDim.y;
+            subrect.bottom = centre.y + subRectDim.y;
+        }
+        else if (loc.y > dimensions.y - subRectDim.y) {
+            screen_loc.y = m_deviceResources->GetOutputSize().bottom / 2.0f + (m_deviceResources->GetOutputSize().bottom / 2.0f * ((loc.y - dimensions.y + subRectDim.y) / subRectDim.y));
+        }
+        else {
+            screen_loc.y = m_deviceResources->GetOutputSize().bottom / 2.0f * (loc.y / subRectDim.y);
+        }
+    }
+    else {
+        if (loc.x < centre.x - subRectDim.x) {
+            screen_loc.x = loc.x - (centre.x - subRectDim.x);
+        }
+        else if (loc.x > centre.x + subRectDim.x) {
+            screen_loc.x = loc.x - (centre.x - subRectDim.x);
+        }
+        else {
+            screen_loc.x = loc.x - (centre.x - subRectDim.x);
+        }
+
+        //screen_loc.x = 115;
+
+        if (loc.y < centre.y - subRectDim.y) {
+            screen_loc.y = loc.y - (centre.y - subRectDim.y);
+        }
+        else if (loc.y > centre.y + subRectDim.y) {
+            screen_loc.y = loc.y - (centre.y - subRectDim.y);
+        }
+        else {
+            screen_loc.y = loc.y - (centre.y - subRectDim.y);
+        }
     }
     return screen_loc;
 }
@@ -289,12 +315,18 @@ void Game::CreateDeviceDependentResources()
         CreateWICTextureFromFile(device, L"sunset.jpg", nullptr,
             m_background.ReleaseAndGetAddressOf()));
     dimensions.x = 799;
-    dimensions.y = 479;
+    dimensions.y = 599;
 
     subrect.left = 100;
     subrect.right = 280;
+    subRectDim.x = 90;
+
     subrect.top = 100;
     subrect.bottom = 320;
+    subRectDim.y = 110;
+
+    centre.x = 175;
+    centre.y = 175;
 
     std::vector<std::vector<std::string>> name = { { "frame1.png", "frame2.png" } };
 
@@ -313,10 +345,21 @@ void Game::CreateDeviceDependentResources()
         m_deviceResources,
         0.33,
         m_timer.GetTotalSeconds(),
-        45,
-        75,
-        25,
-        25);
+        50,
+        50,
+        50,
+        50);
+
+    std::vector<std::vector<std::string>> name_3 = { { "grass.png" } };
+
+    sprite_3 = std::make_unique<Entity>(name_3,
+        m_deviceResources,
+        0.33,
+        m_timer.GetTotalSeconds(),
+        200,
+        200,
+        95,
+        97);
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -328,6 +371,8 @@ void Game::CreateWindowSizeDependentResources()
     m_screenPos.y = float(viewSize.bottom) / 2.f;
 
     m_fullscreenRect = m_deviceResources->GetOutputSize();
+    //dimensions.x = m_fullscreenRect.right - 1;
+    //dimensions.y = m_fullscreenRect.bottom - 1;
 }
 
 void Game::OnDeviceLost()

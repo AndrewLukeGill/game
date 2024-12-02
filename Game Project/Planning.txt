@@ -22,3 +22,10 @@ Objectives:
 12. Levels
 13. Assests
 14. Specific implementation
+
+
+World Coordinate system
+- Every objects location is its world coordinates
+- grid based on background image's size
+- start on upper left corner at 0,0
+- Centre of screen used as both player location and to translate coordinates.
