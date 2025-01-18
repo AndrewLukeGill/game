@@ -101,7 +101,7 @@ namespace DX
         Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  m_d3dDepthStencilView;
         D3D11_VIEWPORT                                  m_screenViewport;
 
-        // Direct3D properties.
+        // Direct3D properties.w
         DXGI_FORMAT                                     m_backBufferFormat;
         DXGI_FORMAT                                     m_depthBufferFormat;
         UINT                                            m_backBufferCount;

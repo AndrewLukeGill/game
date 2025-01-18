@@ -58,7 +58,6 @@ Entity::Entity(std::vector<std::vector<std::string>> files,
 
 DirectX::SimpleMath::Vector2 Entity::get_loc()
 {
-	//DirectX::SimpleMath::Vector2 screenLoc(loc.x * m_deviceResources->GetOutputSize().right / 350, loc.y * m_deviceResources->GetOutputSize().bottom / 350);
 	DirectX::SimpleMath::Vector2 screenLoc(loc.x, loc.y);
 	return screenLoc;
 }

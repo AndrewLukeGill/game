@@ -73,28 +73,28 @@ void Game::Update(DX::StepTimer const& timer)
     if (kb.W)
     {
         if (sprite->get_loc().y > 0) {
-            sprite->set_loc(sprite->get_loc().x, sprite->get_loc().y - 2.0f);
+            sprite->set_loc(sprite->get_loc().x, sprite->get_loc().y - 0.75f);
         }
     }
 
     if (kb.S)
     {
         if (sprite->get_loc().y < dimensions.y) {
-            sprite->set_loc(sprite->get_loc().x, sprite->get_loc().y + 2.0f);
+            sprite->set_loc(sprite->get_loc().x, sprite->get_loc().y + 1.0f);
         }  
     }
     
     if (kb.A)
     {
         if (sprite->get_loc().x > 0) {
-            sprite->set_loc(sprite->get_loc().x - 2.0f, sprite->get_loc().y);
+            sprite->set_loc(sprite->get_loc().x - 1.0f, sprite->get_loc().y);
         }
     }
 
     if (kb.D)
     {
         if (sprite->get_loc().x < dimensions.x) {
-            sprite->set_loc(sprite->get_loc().x + 2.0f, sprite->get_loc().y);
+            sprite->set_loc(sprite->get_loc().x + 1.0f, sprite->get_loc().y);
         }
     }
 
@@ -126,7 +126,7 @@ void Game::Render()
     // TODO: Add your rendering code here.
     context;
 
-    m_spriteBatch->Begin();
+    m_spriteBatch->Begin(SpriteSortMode_FrontToBack, m_states->NonPremultiplied());
 
     m_spriteBatch->Draw(m_background.Get(), m_fullscreenRect, &subrect);
 
@@ -138,7 +138,7 @@ void Game::Render()
         Colors::White, 0.f, sprite->get_origin(), sprite->get_scale() * ratio);
 
     m_spriteBatch->Draw(sprite_2->get_frame(m_timer.GetTotalSeconds()).Get(), sprite_2->get_loc(), nullptr,
-        Colors::White, 0.f, sprite_2->get_origin(), sprite_2->get_scale() * ratio);
+        Colors::White, 0.f, sprite_2->get_origin() / ratio, sprite_2->get_scale() * ratio);
 
     m_spriteBatch->Draw(sprite_3->get_frame(m_timer.GetTotalSeconds()).Get(), TranslateCoordinates(sprite_3->get_loc(), false), nullptr,
         Colors::White, 0.f, sprite_3->get_origin(), sprite_3->get_scale() * ratio);
@@ -182,29 +182,9 @@ DirectX::SimpleMath::Vector2 Game::TranslateCoordinates(DirectX::SimpleMath::Vec
         }
     }
     else {
-        /*if (loc.x < centre.x - subRectDim.x) {
-            screen_loc.x = loc.x - (centre.x - subRectDim.x);
-        }
-        else if (loc.x > centre.x + subRectDim.x) {
-            screen_loc.x = loc.x - (centre.x - subRectDim.x);
-        }
-        else {
-            screen_loc.x = loc.x - (centre.x - subRectDim.x);
-        }*/
-        screen_loc.x = (dimensions.x / (subRectDim.x * 2)) * (loc.x - (centre.x - subRectDim.x));
+        screen_loc.x = (ratio) * (dimensions.x / (subRectDim.x * 2)) * (loc.x - (centre.x - subRectDim.x));
 
-        //screen_loc.x = 115;
-
-        /*if (loc.y < centre.y - subRectDim.y) {
-            screen_loc.y = loc.y - (centre.y - subRectDim.y);
-        }
-        else if (loc.y > centre.y + subRectDim.y) {
-            screen_loc.y = loc.y - (centre.y - subRectDim.y);
-        }
-        else {
-            screen_loc.y = loc.y - (centre.y - subRectDim.y);
-        }*/
-        screen_loc.y = (dimensions.y / (subRectDim.y * 2)) * (loc.y - (centre.y - subRectDim.y));
+        screen_loc.y = (ratio) * (dimensions.y / (subRectDim.y * 2)) * (loc.y - (centre.y - subRectDim.y));
     }
     return screen_loc;
 }
@@ -280,8 +260,8 @@ void Game::OnWindowSizeChanged(int width, int height)
 void Game::GetDefaultSize(int& width, int& height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
-    width = 800;
-    height = 480;
+    width = 720;
+    height = 405;
 }
 #pragma endregion
 
@@ -316,8 +296,8 @@ void Game::CreateDeviceDependentResources()
     DX::ThrowIfFailed(
         CreateWICTextureFromFile(device, L"sunset.jpg", nullptr,
             m_background.ReleaseAndGetAddressOf()));
-    dimensions.x = 800;
-    dimensions.y = 480;
+    dimensions.x = 720;
+    dimensions.y = 405;
 
     subrect.left = 100;
     subrect.right = 300;
@@ -358,16 +338,16 @@ void Game::CreateDeviceDependentResources()
         m_deviceResources,
         0.33,
         m_timer.GetTotalSeconds(),
-        800,
-        480,
-        95,
-        97);
+        400,
+        240,
+        100,
+        100);
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
 void Game::CreateWindowSizeDependentResources()
 {
-    // TODO: Initialize windows-size dependent objects here.
+    // TODO: Initialize windows-size dependent objects here.aw
     float old = m_fullscreenRect.right;
     auto viewSize = m_deviceResources->GetOutputSize();
     m_screenPos.x = float(viewSize.right) / 2.f;
@@ -375,7 +355,10 @@ void Game::CreateWindowSizeDependentResources()
 
     m_fullscreenRect = m_deviceResources->GetOutputSize();
 
-    ratio = m_fullscreenRect.right / 800;
+    float x_ratio = m_fullscreenRect.right / 720.0f;
+    float y_ratio = m_fullscreenRect.bottom / 405.0f;
+
+    ratio = m_fullscreenRect.right / 720.0f;
 }
 
 void Game::OnDeviceLost()
