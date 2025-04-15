@@ -49,6 +49,7 @@ Entity::Entity(std::vector<std::vector<std::string>> files,
 	this->last_update = start_time;
 
 	this->loc.x = x_loc, this->loc.y = y_loc;
+	this->next_loc.x = x_loc, this->loc.y = y_loc;
 	this->size.x = width, this->size.y = height;
 	this->facing = 0;
 
@@ -72,9 +73,19 @@ void Entity::set_loc(int x, int y)
 	loc.x = x, loc.y = y;
 }
 
+void Entity::calc_loc()
+{
+	next_loc.x = loc.x + speed.x, next_loc.y = loc.y + speed.y;
+}
+
+DirectX::SimpleMath::Vector2 Entity::get_calc_loc()
+{
+	return next_loc;
+}
+
 void Entity::update_loc() 
 {
-	loc.x += speed.x, loc.y += speed.y;
+	loc.x = next_loc.x, loc.y = next_loc.y;
 }
 
 DirectX::SimpleMath::Vector2 Entity::get_speed()
@@ -82,9 +93,14 @@ DirectX::SimpleMath::Vector2 Entity::get_speed()
 	return speed;
 }
 
-void Entity::update_speed(int x, int y)
+void Entity::update_speed(float x, float y)
 {
 	speed.x += x, speed.y += y;
+}
+
+void Entity::set_speed(float x, float y)
+{
+	speed.x = x, speed.y = y;
 }
 
 int Entity::get_facing()

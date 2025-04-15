@@ -64,6 +64,7 @@ void Game::Update(DX::StepTimer const& timer)
 
     // TODO: Add your game logic here.
     auto kb = m_keyboard->GetState();
+    boolean w = false, s = false, a = false, d = false;
 
     if (kb.Space)
     {
@@ -72,31 +73,85 @@ void Game::Update(DX::StepTimer const& timer)
 
     if (kb.W)
     {
-        if (sprite->get_loc().y > 0) {
-            sprite->set_loc(sprite->get_loc().x, sprite->get_loc().y - 0.75f);
-        }
+        /*if (sprite->get_loc().y > 0) {
+            sprite->set_loc(sprite->get_loc().x, sprite->get_loc().y - 1.5f);
+        }*/
+        w = true;
     }
 
     if (kb.S)
     {
-        if (sprite->get_loc().y < dimensions.y) {
-            sprite->set_loc(sprite->get_loc().x, sprite->get_loc().y + 1.0f);
-        }  
+       /* if (sprite->get_loc().y < dimensions.y) {
+            sprite->set_loc(sprite->get_loc().x, sprite->get_loc().y + 1.5f);
+        }  */
+        s = true;
     }
     
     if (kb.A)
     {
-        if (sprite->get_loc().x > 0) {
-            sprite->set_loc(sprite->get_loc().x - 1.0f, sprite->get_loc().y);
-        }
+        /*if (sprite->get_loc().x > 0) {
+            sprite->set_loc(sprite->get_loc().x - 1.5f, sprite->get_loc().y);
+        }*/
+        a = true;
     }
 
     if (kb.D)
     {
-        if (sprite->get_loc().x < dimensions.x) {
-            sprite->set_loc(sprite->get_loc().x + 1.0f, sprite->get_loc().y);
-        }
+        /*if (sprite->get_loc().x < dimensions.x) {
+            sprite->set_loc(sprite->get_loc().x + 1.5f, sprite->get_loc().y);
+        }*/
+        d = true;
     }
+
+    /*if (w and a and !s and !d)
+    {
+        sprite->update_speed(10/ sqrt(2), -10 / sqrt(2));
+    }*/
+    if (w and a and !s and !d) 
+    {
+        sprite->update_speed(-1 * sqrt(2), -1 * sqrt(2));
+    } 
+    else if (w and !a and !s and d) 
+    {
+        sprite->update_speed(sqrt(2), -1 * sqrt(2));
+    }
+    else if (!w and a and s and !d) 
+    {
+        sprite->update_speed(-1 * sqrt(2), sqrt(2));
+    } 
+    else if (!w and !a and s and d) 
+    {
+        sprite->update_speed(sqrt(2), sqrt(2));
+    }
+    else if (w)
+    {
+        sprite->update_speed(0.0f, -2.0f);
+    }
+    else if (s)
+    {
+        sprite->update_speed(0.0f, 2.0f);
+    }
+    else if (a)
+    {
+        sprite->update_speed(-2.0f, 0.0f);
+    }
+    else if (d) 
+    {
+        sprite->update_speed(2.0f, 0.0f);
+    }
+
+    sprite->calc_loc();
+
+    if ((sprite->get_calc_loc().x > 350) and (sprite->get_calc_loc().x < 450) and (sprite->get_calc_loc().y > 190) and (sprite->get_calc_loc().y < 290))
+    {
+        sprite->set_speed(0, 0);
+        sprite->calc_loc();
+
+    }
+
+    sprite->update_loc();
+
+    sprite->set_speed(0.0f, 0.0f);
 
     auto mouse = m_mouse->GetState();
     if (mouse.leftButton)

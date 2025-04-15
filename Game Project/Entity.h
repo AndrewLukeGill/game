@@ -24,15 +24,21 @@ class Entity
 
 		void set_loc(int x, int y);
 
+		void calc_loc();
+
+		DirectX::SimpleMath::Vector2 get_calc_loc();
+
 		void update_loc();
 
 		DirectX::SimpleMath::Vector2 get_speed();
 
+		void update_speed(float x, float y);
+
+		void set_speed(float x, float y);
+
 		float get_scale();
 
 		void update_scale();
-
-		void update_speed(int x, int y);
 
 		int get_facing();
 
@@ -63,6 +69,7 @@ class Entity
 		double last_update;
 
 		DirectX::SimpleMath::Vector2 loc;
+		DirectX::SimpleMath::Vector2 next_loc;
 		DirectX::SimpleMath::Vector2 speed;
 		DirectX::SimpleMath::Vector2 size;
 		int facing;
